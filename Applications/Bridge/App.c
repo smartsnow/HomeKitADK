@@ -120,25 +120,44 @@ static void SaveAccessoryState(void) {
 //----------------------------------------------------------------------------------------------------------------------
 
 /**
- * HomeKit accessory that provides the Light Bulb service.
+ * HomeKit accessory that provides the Bridge service.
  *
  * Note: Not constant to enable BCT Manual Name Change.
  */
 static HAPAccessory accessory = { .aid = 1,
-                                  .category = kHAPAccessoryCategory_Lighting,
-                                  .name = "Acme Light Bulb",
-                                  .manufacturer = "Acme",
-                                  .model = "LightBulb1,1",
-                                  .serialNumber = "099DB48E9E28",
+                                  .category = kHAPAccessoryCategory_Bridges,
+                                  .name = "Snow Mesh Bridge",
+                                  .manufacturer = "Snow",
+                                  .model = "Mesh Bridge 1,1",
+                                  .serialNumber = "000000000001",
                                   .firmwareVersion = "1",
                                   .hardwareVersion = "1",
                                   .services = (const HAPService* const[]) { &accessoryInformationService,
                                                                             &hapProtocolInformationService,
                                                                             &pairingService,
+                                                                            NULL },
+                                  .callbacks = { .identify = IdentifyAccessory } };
+
+/**
+ * HomeKit accessory that provides the Light Bulb service.
+ *
+ * Note: Not constant to enable BCT Manual Name Change.
+ */
+static HAPAccessory lightBulbAccessory = { .aid = 2,
+                                  .category = kHAPAccessoryCategory_BridgedAccessory,
+                                  .name = "Snow Light Bulb",
+                                  .manufacturer = "Snow",
+                                  .model = "LightBulb 1,1",
+                                  .serialNumber = "000000000002",
+                                  .firmwareVersion = "1",
+                                  .hardwareVersion = "1",
+                                  .services = (const HAPService* const[]) { &accessoryInformationService,
                                                                             &lightBulbService,
                                                                             NULL },
                                   .callbacks = { .identify = IdentifyAccessory } };
 
+const HAPAccessory* const* bridgedAccessories = (const HAPAccessory *const[]){ &lightBulbAccessory,
+                                                                               NULL};
 //----------------------------------------------------------------------------------------------------------------------
 
 HAP_RESULT_USE_CHECK
@@ -298,7 +317,10 @@ void AppRelease(void) {
 }
 
 void AppAccessoryServerStart(void) {
-    HAPAccessoryServerStart(accessoryConfiguration.server, &accessory);
+    HAPAccessoryServerStartBridge(accessoryConfiguration.server, 
+    &accessory,
+    bridgedAccessories,
+    true);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

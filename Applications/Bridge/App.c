@@ -53,6 +53,9 @@
 typedef struct {
     struct {
         bool lightBulbOn;
+        float lightBulbHue;
+        float lightBulbSaturation;
+        int32_t lightBulbBrightness;
     } state;
     HAPAccessoryServerRef* server;
     HAPPlatformKeyValueStoreRef keyValueStore;
@@ -168,6 +171,96 @@ HAPError HandleLightBulbOnWrite(
     HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, value ? "true" : "false");
     if (accessoryConfiguration.state.lightBulbOn != value) {
         accessoryConfiguration.state.lightBulbOn = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPFloatCharacteristicReadRequest* request HAP_UNUSED,
+        float* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbHue;
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, value);
+    if (accessoryConfiguration.state.lightBulbHue != value) {
+        accessoryConfiguration.state.lightBulbHue = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPFloatCharacteristicReadRequest* request HAP_UNUSED,
+        float* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbSaturation;
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, value);
+    if (accessoryConfiguration.state.lightBulbSaturation != value) {
+        accessoryConfiguration.state.lightBulbSaturation = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPIntCharacteristicReadRequest* request HAP_UNUSED,
+        int32_t* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbBrightness;
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessWrite(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicWriteRequest* request,
+        int32_t value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+    if (accessoryConfiguration.state.lightBulbBrightness != value) {
+        accessoryConfiguration.state.lightBulbBrightness = value;
 
         SaveAccessoryState();
 

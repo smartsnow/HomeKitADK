@@ -1,0 +1,154 @@
+.PHONY: all clean
+
+TARGET := Lightbulb
+
+SRCS := \
+PAL/HAPPlatformSystemInit.c \
+Applications/Lightbulb/Main.c \
+Applications/Lightbulb/App.c \
+Applications/Lightbulb/DB.c \
+HAP/HAPBLEAccessoryServer.c \
+HAP/HAPPairingPairVerify.c \
+HAP/HAPBLECharacteristicParseAndWriteValue.c \
+HAP/HAPPDU.c \
+HAP/HAPBLETransaction.c \
+HAP/HAPRequestHandlers+HAPProtocolInformation.c \
+HAP/HAPCharacteristic.c \
+HAP/HAPTLV.c \
+HAP/HAPAccessory+Info.c \
+HAP/HAPRequestHandlers+AccessoryInformation.c \
+HAP/HAPBLEService+Signature.c \
+HAP/HAPIPSecurityProtocol.c \
+HAP/HAPBLEPDU+TLV.c \
+HAP/HAPIPAccessory.c \
+HAP/HAPBLEPeripheralManager.c \
+HAP/HAPStringBuilder.c \
+HAP/HAPIPCharacteristic.c \
+HAP/HAPBLECharacteristic.c \
+HAP/HAPBLECharacteristicReadAndSerializeValue.c \
+HAP/HAPIPServiceDiscovery.c \
+HAP/HAPUUID.c \
+HAP/HAPIPAccessoryServer.c \
+HAP/HAPServiceTypes.c \
+HAP/HAPRequestHandlers+Pairing.c \
+HAP/HAPLegacyImport.c \
+HAP/HAPCharacteristicTypes.c \
+HAP/HAPPairing.c \
+HAP/HAPPairingPairings.c \
+HAP/HAPAccessorySetup.c \
+HAP/HAPMACAddress.c \
+HAP/HAPIPAccessoryProtocol.c \
+HAP/HAPBLEPDU.c \
+HAP/HAPBLECharacteristic+Signature.c \
+HAP/HAPBLEAccessoryServer+Broadcast.c \
+HAP/HAPAccessoryValidation.c \
+HAP/HAPBLEProcedure.c \
+HAP/HAPTLVWriter.c \
+HAP/HAPMFiTokenAuth.c \
+HAP/HAPBLESession.c \
+HAP/HAPDeviceID.c \
+HAP/HAPBLECharacteristic+Configuration.c \
+HAP/HAPRequestHandlers.c \
+HAP/HAPBLEAccessoryServer+Advertising.c \
+HAP/HAPPairingPairSetup.c \
+HAP/HAPTLVReader.c \
+HAP/HAPIP+ByteBuffer.c \
+HAP/HAPBLECharacteristic+Broadcast.c \
+HAP/HAPAccessoryServer+Reset.c \
+HAP/HAPAccessorySetupInfo.c \
+HAP/HAPAccessoryServer.c \
+HAP/HAPBitSet.c \
+HAP/HAPVersion.c \
+HAP/HAPSession.c \
+HAP/HAPBLEProtocol+Configuration.c \
+HAP/HAPPairingBLESessionCache.c \
+HAP/HAPMFiHWAuth.c \
+HAP/HAPJSONUtils.c \
+HAP/HAPTLVMemory.c \
+PAL/HAPBase+Float.c \
+PAL/HAPBase+MACAddress.c \
+PAL/HAPAssert.c \
+PAL/HAPBase+RawBuffer.c \
+PAL/HAPBase+Double.c \
+PAL/HAPBase+Int.c \
+PAL/HAPBase+Crypto.c \
+PAL/HAPBase+String.c \
+PAL/HAPLog.c \
+PAL/HAPBase+Sha1Checksum.c \
+PAL/HAPBase+UTF8.c \
+External/HTTP/util_http_reader.c \
+External/JSON/util_json_reader.c \
+External/Base64/util_base64.c \
+PAL/Linux/HAPPlatformRunLoop.c \
+PAL/Linux/HAPPlatformClock.c \
+PAL/Linux/HAPPlatformMFiHWAuth.c \
+PAL/Linux/HAPPlatformRandomNumber.c \
+PAL/Linux/HAPPlatformBLEPeripheralManager.c \
+PAL/Linux/HAPPlatformAccessorySetupDisplay.c \
+PAL/Linux/HAPPlatformServiceDiscovery.c \
+PAL/Linux/HAPPlatformAccessorySetup.c \
+PAL/Linux/HAPPlatformKeyValueStore.c \
+PAL/Linux/HAPPlatformAbort.c \
+PAL/Linux/HAPPlatformFileManager.c \
+PAL/Linux/HAPPlatformTCPStreamManager.c \
+PAL/Linux/HAPPlatformSystemCommand.c \
+PAL/Linux/HAPPlatform.c \
+PAL/Linux/HAPPlatformMFiTokenAuth.c \
+PAL/Linux/HAPPlatformAccessorySetupNFC.c \
+PAL/Linux/HAPPlatformLog.c \
+PAL/Crypto/OpenSSL/HAPOpenSSL.c
+
+INCS := \
+-IHAP \
+-IExternal/HTTP \
+-IExternal/JSON \
+-IExternal/Base64 \
+-I/include \
+-IPAL \
+-IPAL/Linux
+
+DEFS := \
+-DHAP_ENABLE_DEVELOPMENT_ONLY_CODE=1 \
+-DHAP_LOG_LEVEL=3 \
+-DHAP_TESTING \
+-DHAP_Debug \
+-DIP=1
+
+CCFLAGS := \
+-Wall \
+-Wextra \
+-Werror \
+-ffunction-sections \
+-fdata-sections \
+-O0 \
+-g \
+
+LDFLAGS := \
+-ldns_sd \
+-pthread \
+-lm \
+-L/lib \
+-lcrypto
+
+OBJS := $(addprefix out/,$(subst .c,.o,$(SRCS)))
+
+CC := clang
+
+all: out/$(TARGET)
+
+out/$(TARGET): $(OBJS)
+	@echo Linking $@
+	@$(CC) -Wl,--start-group $(LDFLAGS) $^ -Wl,--end-group -o $@
+	@echo Done
+
+-include $(subst .o,.d,$(OBJS))
+
+# $(OBJS): out/%.o: %.c
+out/%.o: %.c
+	@echo Compiling $<
+	@-mkdir -p $(dir $@)
+	@$(CC) $(INCS) $(DEFS) $(CCFLAGS) -MMD -c $< -o $@
+
+clean:
+	@-rm -rf out
+	@echo Done

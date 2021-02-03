@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean run setup
 
 TARGET := Lightbulb
 
@@ -152,3 +152,13 @@ out/%.o: %.c
 clean:
 	@-rm -rf out
 	@echo Done
+
+run: ./out/Lightbulb
+	./out/Lightbulb
+
+Output/Linux-x86_64-pc-linux-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL:
+	make tools
+
+setup: Output/Linux-x86_64-pc-linux-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL
+	rm -rf .HomeKitStore
+	Tools/provision_raspi.sh --category 5 --setup-code 111-22-333 --setup-id SNOW .HomeKitStore

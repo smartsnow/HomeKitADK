@@ -53,6 +53,12 @@
 typedef struct {
     struct {
         bool lightBulbOn;
+        float lightBulbHue;
+        float lightBulbSaturation;
+        int32_t lightBulbBrightness;
+        bool whiteOn;
+        int32_t whiteBrightness;
+        uint32_t whiteColorTemperature;
     } state;
     HAPAccessoryServerRef* server;
     HAPPlatformKeyValueStoreRef keyValueStore;
@@ -133,6 +139,7 @@ static HAPAccessory accessory = { .aid = 1,
                                                                             &hapProtocolInformationService,
                                                                             &pairingService,
                                                                             &lightBulbService,
+                                                                            &whiteService,
                                                                             NULL },
                                   .callbacks = { .identify = IdentifyAccessory } };
 
@@ -168,6 +175,192 @@ HAPError HandleLightBulbOnWrite(
     HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, value ? "true" : "false");
     if (accessoryConfiguration.state.lightBulbOn != value) {
         accessoryConfiguration.state.lightBulbOn = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPFloatCharacteristicReadRequest* request HAP_UNUSED,
+        float* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbHue;
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, value);
+    if (accessoryConfiguration.state.lightBulbHue != value) {
+        accessoryConfiguration.state.lightBulbHue = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPFloatCharacteristicReadRequest* request HAP_UNUSED,
+        float* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbSaturation;
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %g", __func__, value);
+    if (accessoryConfiguration.state.lightBulbSaturation != value) {
+        accessoryConfiguration.state.lightBulbSaturation = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPIntCharacteristicReadRequest* request HAP_UNUSED,
+        int32_t* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.lightBulbBrightness;
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessWrite(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicWriteRequest* request,
+        int32_t value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+    if (accessoryConfiguration.state.lightBulbBrightness != value) {
+        accessoryConfiguration.state.lightBulbBrightness = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteOnRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPBoolCharacteristicReadRequest* request HAP_UNUSED,
+        bool* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.whiteOn;
+    HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, *value ? "true" : "false");
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteOnWrite(
+        HAPAccessoryServerRef* server,
+        const HAPBoolCharacteristicWriteRequest* request,
+        bool value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, value ? "true" : "false");
+    if (accessoryConfiguration.state.whiteOn != value) {
+        accessoryConfiguration.state.whiteOn = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteBrightnessRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPIntCharacteristicReadRequest* request HAP_UNUSED,
+        int32_t* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.whiteBrightness;
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteBrightnessWrite(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicWriteRequest* request,
+        int32_t value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+    if (accessoryConfiguration.state.whiteBrightness != value) {
+        accessoryConfiguration.state.whiteBrightness = value;
+
+        SaveAccessoryState();
+
+        HAPAccessoryServerRaiseEvent(server, request->characteristic, request->service, request->accessory);
+    }
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteColorTemperatureRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPUInt32CharacteristicReadRequest* request HAP_UNUSED,
+        uint32_t* value,
+        void* _Nullable context HAP_UNUSED) {
+    if (accessoryConfiguration.state.whiteColorTemperature < 50)
+    {
+        accessoryConfiguration.state.whiteColorTemperature = 50;
+        SaveAccessoryState();
+    }
+    *value = accessoryConfiguration.state.whiteColorTemperature;
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, *value);
+
+    return kHAPError_None;
+}
+
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteColorTemperatureWrite(
+        HAPAccessoryServerRef* server,
+        const HAPUInt32CharacteristicWriteRequest* request,
+        uint32_t value,
+        void* _Nullable context HAP_UNUSED) {
+    HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+    if (accessoryConfiguration.state.whiteColorTemperature != value) {
+        accessoryConfiguration.state.whiteColorTemperature = value;
 
         SaveAccessoryState();
 

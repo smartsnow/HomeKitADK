@@ -53,6 +53,126 @@ HAPError HandleLightBulbOnWrite(
         void* _Nullable context);
 
 /**
+ * Handle read request to the 'Hue' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueRead(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicReadRequest* request,
+        float* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'Hue' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbHueWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context);
+
+/**
+ * Handle read request to the 'Saturation' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationRead(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicReadRequest* request,
+        float* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'Saturation' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbSaturationWrite(
+        HAPAccessoryServerRef* server,
+        const HAPFloatCharacteristicWriteRequest* request,
+        float value,
+        void* _Nullable context);
+
+/**
+ * Handle read request to the 'Brightness' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessRead(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicReadRequest* request,
+        int32_t* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'Brightness' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleLightBulbBrightnessWrite(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicWriteRequest* request,
+        int32_t value,
+        void* _Nullable context);
+        
+/**
+ * Handle read request to the 'On' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteOnRead(
+        HAPAccessoryServerRef* server,
+        const HAPBoolCharacteristicReadRequest* request,
+        bool* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'On' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteOnWrite(
+        HAPAccessoryServerRef* server,
+        const HAPBoolCharacteristicWriteRequest* request,
+        bool value,
+        void* _Nullable context);
+
+/**
+ * Handle read request to the 'Brightness' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteBrightnessRead(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicReadRequest* request,
+        int32_t* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'Brightness' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteBrightnessWrite(
+        HAPAccessoryServerRef* server,
+        const HAPIntCharacteristicWriteRequest* request,
+        int32_t value,
+        void* _Nullable context);
+        
+/**
+ * Handle read request to the 'ColorTemperature' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteColorTemperatureRead(
+        HAPAccessoryServerRef* server,
+        const HAPUInt32CharacteristicReadRequest* request,
+        uint32_t* value,
+        void* _Nullable context);
+
+/**
+ * Handle write request to the 'ColorTemperature' characteristic of the Light Bulb service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleWhiteColorTemperatureWrite(
+        HAPAccessoryServerRef* server,
+        const HAPUInt32CharacteristicWriteRequest* request,
+        uint32_t value,
+        void* _Nullable context);
+
+/**
  * Initialize the application.
  */
 void AppCreate(HAPAccessoryServerRef* server, HAPPlatformKeyValueStoreRef keyValueStore);

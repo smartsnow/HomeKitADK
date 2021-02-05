@@ -715,7 +715,7 @@ const HAPService whiteService = {
     .serviceType = &kHAPServiceType_LightBulb,
     .debugDescription = kHAPServiceDebugDescription_LightBulb,
     .name = "White",
-    .properties = { .primaryService = true, .hidden = false, .ble = { .supportsConfiguration = false } },
+    .properties = { .primaryService = false, .hidden = false, .ble = { .supportsConfiguration = false } },
     .linkedServices = NULL,
     .characteristics = (const HAPCharacteristic* const[]) { &whiteServiceSignatureCharacteristic,
                                                             &whiteNameCharacteristic,

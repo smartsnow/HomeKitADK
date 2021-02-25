@@ -21,6 +21,10 @@
 #endif
 
 #include <signal.h>
+#include "mesh.h"
+#include "light.h"
+#include "switch.h"
+
 static bool requestedFactoryReset = false;
 static bool clearPairings = false;
 
@@ -279,6 +283,11 @@ static void InitializeBLE() {
 
 int main(int argc HAP_UNUSED, char* _Nullable argv[_Nullable] HAP_UNUSED) {
     HAPAssert(HAPGetCompatibilityVersion() == HAP_COMPATIBILITY_VERSION);
+
+    mesh_init();
+
+    light_init();
+    switch_init();
 
     // Initialize global platform objects.
     InitializePlatform();

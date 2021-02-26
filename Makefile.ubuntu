@@ -1,12 +1,16 @@
 .PHONY: all clean run setup
 
-TARGET := Lightbulb
+TARGET := Bridge
 
 SRCS := \
 PAL/HAPPlatformSystemInit.c \
-Applications/Lightbulb/Main.c \
-Applications/Lightbulb/App.c \
-Applications/Lightbulb/DB.c \
+Applications/Bridge/App.c \
+Applications/Bridge/light.c \
+Applications/Bridge/mesh.c \
+Applications/Bridge/uart.c \
+Applications/Bridge/DB.c \
+Applications/Bridge/Main.c \
+Applications/Bridge/switch.c \
 HAP/HAPBLEAccessoryServer.c \
 HAP/HAPPairingPairVerify.c \
 HAP/HAPBLECharacteristicParseAndWriteValue.c \
@@ -79,23 +83,23 @@ PAL/HAPBase+UTF8.c \
 External/HTTP/util_http_reader.c \
 External/JSON/util_json_reader.c \
 External/Base64/util_base64.c \
-PAL/Linux/HAPPlatformRunLoop.c \
-PAL/Linux/HAPPlatformClock.c \
-PAL/Linux/HAPPlatformMFiHWAuth.c \
-PAL/Linux/HAPPlatformRandomNumber.c \
-PAL/Linux/HAPPlatformBLEPeripheralManager.c \
-PAL/Linux/HAPPlatformAccessorySetupDisplay.c \
-PAL/Linux/HAPPlatformServiceDiscovery.c \
-PAL/Linux/HAPPlatformAccessorySetup.c \
-PAL/Linux/HAPPlatformKeyValueStore.c \
-PAL/Linux/HAPPlatformAbort.c \
-PAL/Linux/HAPPlatformFileManager.c \
-PAL/Linux/HAPPlatformTCPStreamManager.c \
-PAL/Linux/HAPPlatformSystemCommand.c \
-PAL/Linux/HAPPlatform.c \
-PAL/Linux/HAPPlatformMFiTokenAuth.c \
-PAL/Linux/HAPPlatformAccessorySetupNFC.c \
-PAL/Linux/HAPPlatformLog.c \
+PAL/Raspi/HAPPlatformRunLoop.c \
+PAL/Raspi/HAPPlatformClock.c \
+PAL/Raspi/HAPPlatformMFiHWAuth.c \
+PAL/Raspi/HAPPlatformRandomNumber.c \
+PAL/Raspi/HAPPlatformBLEPeripheralManager.c \
+PAL/Raspi/HAPPlatformAccessorySetupDisplay.c \
+PAL/Raspi/HAPPlatformServiceDiscovery.c \
+PAL/Raspi/HAPPlatformAccessorySetup.c \
+PAL/Raspi/HAPPlatformKeyValueStore.c \
+PAL/Raspi/HAPPlatformAbort.c \
+PAL/Raspi/HAPPlatformFileManager.c \
+PAL/Raspi/HAPPlatformTCPStreamManager.c \
+PAL/Raspi/HAPPlatformSystemCommand.c \
+PAL/Raspi/HAPPlatform.c \
+PAL/Raspi/HAPPlatformMFiTokenAuth.c \
+PAL/Raspi/HAPPlatformAccessorySetupNFC.c \
+PAL/Raspi/HAPPlatformLog.c \
 PAL/Crypto/OpenSSL/HAPOpenSSL.c
 
 INCS := \
@@ -105,19 +109,16 @@ INCS := \
 -IExternal/Base64 \
 -I/include \
 -IPAL \
--IPAL/Linux
+-IPAL/Raspi
 
 DEFS := \
 -DHAP_ENABLE_DEVELOPMENT_ONLY_CODE=1 \
--DHAP_LOG_LEVEL=3 \
+-DHAP_LOG_LEVEL=2 \
 -DHAP_TESTING \
 -DHAP_Debug \
 -DIP=1
 
 CCFLAGS := \
--Wall \
--Wextra \
--Werror \
 -ffunction-sections \
 -fdata-sections \
 -O0 \
@@ -153,12 +154,12 @@ clean:
 	@-rm -rf out
 	@echo Done
 
-run: ./out/Lightbulb
-	./out/Lightbulb
+run: ./out/Bridge
+	./out/Bridge
 
-Output/Linux-x86_64-pc-linux-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL:
+Output/Raspi-x86_64-pc-Raspi-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL:
 	make tools
 
-setup: Output/Linux-x86_64-pc-linux-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL
+setup: Output/Raspi-x86_64-pc-Raspi-gnu/Debug/Tools/AccessorySetupGenerator.OpenSSL
 	rm -rf .HomeKitStore
 	Tools/provision_raspi.sh --category 5 --setup-code 111-22-333 --setup-id SNOW .HomeKitStore

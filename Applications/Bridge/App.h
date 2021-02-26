@@ -193,6 +193,16 @@ HAPError HandleSwitchOnWrite(
         void* _Nullable context);
 
 /**
+ * Handle read request to the 'ContactSensorState' characteristic of the Switch service.
+ */
+HAP_RESULT_USE_CHECK
+HAPError HandleContactSensorStateRead(
+        HAPAccessoryServerRef* server,
+        const HAPUInt8CharacteristicReadRequest* request,
+        uint8_t* value,
+        void* _Nullable context);
+
+/**
  * Initialize the application.
  */
 void AppCreate(HAPAccessoryServerRef* server, HAPPlatformKeyValueStoreRef keyValueStore);
@@ -234,6 +244,8 @@ void AccessoryNotification(
         const HAPService* service,
         const HAPCharacteristic* characteristic,
         void* ctx HAP_UNUSED);
+
+void ContactSensorNotification(uint8_t state);
 
 #if __has_feature(nullability)
 #pragma clang assume_nonnull end

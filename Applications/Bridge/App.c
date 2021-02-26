@@ -62,6 +62,7 @@ typedef struct {
         int32_t whiteBrightness;
         uint32_t whiteColorTemperature;
         bool switchOn;
+        uint8_t ContactSensorState;
     } state;
     HAPAccessoryServerRef* server;
     HAPPlatformKeyValueStoreRef keyValueStore;
@@ -181,8 +182,27 @@ static HAPAccessory switchAccessory = { .aid = 3,
                                                                             NULL },
                                   .callbacks = { .identify = IdentifyAccessory } };
 
+/**
+ * HomeKit accessory that provides the Contact Sensor service.
+ *
+ * Note: Not constant to enable BCT Manual Name Change.
+ */
+static HAPAccessory contactSensorAccessory = { .aid = 4,
+                                  .category = kHAPAccessoryCategory_BridgedAccessory,
+                                  .name = "MXCHIP Contact Sensor",
+                                  .manufacturer = "MXCHIP",
+                                  .model = "Contact Sensor 1,1",
+                                  .serialNumber = "000000000002",
+                                  .firmwareVersion = "1",
+                                  .hardwareVersion = "1",
+                                  .services = (const HAPService* const[]) { &accessoryInformationService,
+                                                                            &contactSensorService,
+                                                                            NULL },
+                                  .callbacks = { .identify = IdentifyAccessory } };
+
 const HAPAccessory* const* bridgedAccessories = (const HAPAccessory *const[]){ &lightBulbAccessory,
                                                                                &switchAccessory,
+                                                                               &contactSensorAccessory,
                                                                                NULL};
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -469,6 +489,18 @@ HAPError HandleSwitchOnWrite(
     return kHAPError_None;
 }
 
+HAP_RESULT_USE_CHECK
+HAPError HandleContactSensorStateRead(
+        HAPAccessoryServerRef* server HAP_UNUSED,
+        const HAPUInt8CharacteristicReadRequest* request HAP_UNUSED,
+        uint8_t* value,
+        void* _Nullable context HAP_UNUSED) {
+    *value = accessoryConfiguration.state.ContactSensorState;
+    HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, *value ? "true" : "false");
+
+    return kHAPError_None;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 void AccessoryNotification(
@@ -479,6 +511,17 @@ void AccessoryNotification(
     HAPLogInfo(&kHAPLog_Default, "Accessory Notification");
 
     HAPAccessoryServerRaiseEvent(accessoryConfiguration.server, characteristic, service, accessory);
+}
+
+void ContactSensorNotificationCallback(void* _Nullable context, size_t contextSize)
+{
+    HAPAccessoryServerRaiseEvent(accessoryConfiguration.server, &contactSensorStateCharacteristic, &contactSensorService, &contactSensorAccessory);
+}
+
+void ContactSensorNotification(uint8_t state)
+{
+    accessoryConfiguration.state.ContactSensorState = state;
+    HAPPlatformRunLoopScheduleCallback(ContactSensorNotificationCallback, NULL, NULL);
 }
 
 void AppCreate(HAPAccessoryServerRef* server, HAPPlatformKeyValueStoreRef keyValueStore) {

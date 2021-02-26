@@ -56,6 +56,11 @@
 #define kIID_SwitchName                ((uint64_t) 0x0052)
 #define kIID_SwitchOn                  ((uint64_t) 0x0053)
 
+#define kIID_ContactSensor                    ((uint64_t) 0x0060)
+#define kIID_ContactSensorServiceSignature    ((uint64_t) 0x0061)
+#define kIID_ContactSensorName                ((uint64_t) 0x0062)
+#define kIID_ContactSensorState               ((uint64_t) 0x0063)
+
 HAP_STATIC_ASSERT(kAttributeCount == 9 + 3 + 5 + 4, AttributeCount_mismatch);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -806,7 +811,7 @@ const HAPBoolCharacteristic switchOnCharacteristic = {
  */
 const HAPService switchService = {
     .iid = kIID_Switch,
-    .serviceType = &kHAPServiceType_Switch,
+    .serviceType = &kHAPServiceType_GarageDoorOpener,
     .debugDescription = kHAPServiceDebugDescription_Switch,
     .name = "Switch",
     .properties = { .primaryService = true, .hidden = false, .ble = { .supportsConfiguration = false } },
@@ -814,5 +819,97 @@ const HAPService switchService = {
     .characteristics = (const HAPCharacteristic* const[]) { &switchServiceSignatureCharacteristic,
                                                             &switchNameCharacteristic,
                                                             &switchOnCharacteristic,
+                                                            NULL }
+};
+
+/**
+ * The 'Service Signature' characteristic of the Contact Sensor service.
+ */
+static const HAPDataCharacteristic contactSensorServiceSignatureCharacteristic = {
+    .format = kHAPCharacteristicFormat_Data,
+    .iid = kIID_ContactSensorServiceSignature,
+    .characteristicType = &kHAPCharacteristicType_ServiceSignature,
+    .debugDescription = kHAPCharacteristicDebugDescription_ServiceSignature,
+    .manufacturerDescription = NULL,
+    .properties = { .readable = true,
+                    .writable = false,
+                    .supportsEventNotification = false,
+                    .hidden = false,
+                    .requiresTimedWrite = false,
+                    .supportsAuthorizationData = false,
+                    .ip = { .controlPoint = true },
+                    .ble = { .supportsBroadcastNotification = false,
+                             .supportsDisconnectedNotification = false,
+                             .readableWithoutSecurity = false,
+                             .writableWithoutSecurity = false } },
+    .constraints = { .maxLength = 2097152 },
+    .callbacks = { .handleRead = HAPHandleServiceSignatureRead, .handleWrite = NULL }
+};
+
+/**
+ * The 'Name' characteristic of the Contact Sensor service.
+ */
+static const HAPStringCharacteristic contactSensorNameCharacteristic = {
+    .format = kHAPCharacteristicFormat_String,
+    .iid = kIID_ContactSensorName,
+    .characteristicType = &kHAPCharacteristicType_Name,
+    .debugDescription = kHAPCharacteristicDebugDescription_Name,
+    .manufacturerDescription = NULL,
+    .properties = { .readable = true,
+                    .writable = false,
+                    .supportsEventNotification = false,
+                    .hidden = false,
+                    .requiresTimedWrite = false,
+                    .supportsAuthorizationData = false,
+                    .ip = { .controlPoint = false, .supportsWriteResponse = false },
+                    .ble = { .supportsBroadcastNotification = false,
+                             .supportsDisconnectedNotification = false,
+                             .readableWithoutSecurity = false,
+                             .writableWithoutSecurity = false } },
+    .constraints = { .maxLength = 64 },
+    .callbacks = { .handleRead = HAPHandleNameRead, .handleWrite = NULL }
+};
+
+/**
+ * The 'Contact Sensor State' characteristic of the Contact Sensor service.
+ */
+const HAPUInt8Characteristic contactSensorStateCharacteristic = {
+    .format = kHAPCharacteristicFormat_UInt8,
+    .iid = kIID_ContactSensorState,
+    .characteristicType = &kHAPCharacteristicType_ContactSensorState,
+    .debugDescription = kHAPCharacteristicDebugDescription_ContactSensorState,
+    .manufacturerDescription = NULL,
+    .properties = { .readable = true,
+                    .writable = false,
+                    .supportsEventNotification = true,
+                    .hidden = false,
+                    .requiresTimedWrite = false,
+                    .supportsAuthorizationData = false,
+                    .ip = { .controlPoint = false, .supportsWriteResponse = false },
+                    .ble = { .supportsBroadcastNotification = true,
+                             .supportsDisconnectedNotification = true,
+                             .readableWithoutSecurity = false,
+                             .writableWithoutSecurity = false } },
+    .constraints = {
+        .minimumValue = 0,
+        .maximumValue = 1,
+        .stepValue = 1,
+    },
+    .callbacks = { .handleRead = HandleContactSensorStateRead, .handleWrite = NULL }
+};
+
+/**
+ * The Contact Sensor service that contains the 'Contact Sensor state' characteristic.
+ */
+const HAPService contactSensorService = {
+    .iid = kIID_ContactSensor,
+    .serviceType = &kHAPServiceType_ContactSensor,
+    .debugDescription = kHAPServiceDebugDescription_ContactSensor,
+    .name = "Contact Sensor",
+    .properties = { .primaryService = true, .hidden = false, .ble = { .supportsConfiguration = false } },
+    .linkedServices = NULL,
+    .characteristics = (const HAPCharacteristic* const[]) { &contactSensorServiceSignatureCharacteristic,
+                                                            &contactSensorNameCharacteristic,
+                                                            &contactSensorStateCharacteristic,
                                                             NULL }
 };

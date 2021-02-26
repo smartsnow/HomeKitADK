@@ -68,15 +68,24 @@ extern const HAPService whiteService;
 extern const HAPService switchService;
 
 /**
+ * Contact sensor service.
+ */
+extern const HAPService contactSensorService;
+
+/**
  * The 'On' characteristic of the Light Bulb service.
  */
 extern const HAPBoolCharacteristic lightBulbOnCharacteristic;
-
 
 /**
  * The 'On' characteristic of the White service.
  */
 extern const HAPBoolCharacteristic whiteOnCharacteristic;
+
+/**
+ * The 'Contact Sensor State' characteristic of the Contact Sensor service.
+ */
+extern const HAPUInt8Characteristic contactSensorStateCharacteristic;
 
 #if __has_feature(nullability)
 #pragma clang assume_nonnull end

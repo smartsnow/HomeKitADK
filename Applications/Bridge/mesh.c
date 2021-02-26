@@ -37,7 +37,7 @@ static void* uart_recv_thread(void* arg) {
 }
 
 void mesh_init(void) {
-    fd = uart_init("/dev/cu.SLAB_USBtoUART");
+    fd = uart_init("/dev/ttyUSB1");
 
     pthread_create(&tid, NULL, &uart_recv_thread, NULL);
 }

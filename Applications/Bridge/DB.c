@@ -811,7 +811,7 @@ const HAPBoolCharacteristic switchOnCharacteristic = {
  */
 const HAPService switchService = {
     .iid = kIID_Switch,
-    .serviceType = &kHAPServiceType_GarageDoorOpener,
+    .serviceType = &kHAPServiceType_Switch,
     .debugDescription = kHAPServiceDebugDescription_Switch,
     .name = "Switch",
     .properties = { .primaryService = true, .hidden = false, .ble = { .supportsConfiguration = false } },

@@ -4,6 +4,8 @@
 
 #include "uart.h"
 
+#include "App.h"
+
 typedef struct {
     uint16_t dst;
     uint32_t opcode;
@@ -33,6 +35,10 @@ static void* uart_recv_thread(void* arg) {
         if (msg.len > 0)
             uart_read(fd, data, msg.len);
         printf("<-- SRC:%04X, DST:%04X, OpCode:%X, TTL:%u, RSSI:%d\n", msg.src, msg.dst, msg.opcode, msg.ttl, msg.rssi);
+        if (msg.src == 0x0006)
+        {
+            ContactSensorNotification(data[3]);
+        }
     }
 }
 
